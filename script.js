@@ -21,12 +21,12 @@ window.addEventListener('load', function(){
     const branches = 2;
 
     // number of sides to form full circle  
-    let sides = Math.floor(Math.random() * 7 + 2);
+    let sides = 5
     //how much smaller the segmets are compared to the previous segment
-    let scale = Math.random() * 0.2 + 0.4;
+    let scale = 0.7;
     //angle in radians between parent branches and their segments
     //0 is cool 
-    let spread = Math.random() * 2.9 + 0.1;   
+    let spread = 0.6;   
     // hsl color declaration 0% is gray scale and 100% is full saturated 
     let color = 'hsl('+Math.random() * 360 +', 100%, 50%)';
     let lineWidth = Math.floor(Math.random() * 20 +10);
@@ -36,29 +36,38 @@ window.addEventListener('load', function(){
     //controls 
     const randomizeButton = document.getElementById('randomizeButton');
     const resetButton = document.getElementById('resetButton');
+
+    const sliderlinewidth = this.document.getElementById('linewidth');
+    const labellinewidth = this.document.querySelector(`[for=linewidth]`);
+    sliderlinewidth.addEventListener('change', function(e){
+        lineWidth = Number(e.target.value);
+        drawFractal();
+        updateSlider();
+    })
     
     const sliderSpread = this.document.getElementById('spread');
     const labelSpread = this.document.querySelector(`[for=spread]`);
     sliderSpread.addEventListener('change', function(e){
-        console.log(e);
-        spread = e.target.value;
+        spread = Number(e.target.value);
         drawFractal();
+        updateSlider();
     })
 
     const sliderScale = this.document.getElementById('scale');
     const labelScale = this.document.querySelector(`[for=scale]`);
     sliderScale.addEventListener('change', function(e){
-        console.log(e);
-        scale = e.target.value;
+        scale = Number(e.target.value);
         drawFractal();
+        updateSlider();
     })
 
     const sliderSides = this.document.getElementById('sides');
     const labelSides = this.document.querySelector(`[for=sides]`);
     sliderSides.addEventListener('change', function(e){
-        console.log(e);
-        sides = e.target.value;
+        sides = Number(e.target.value);
         drawFractal();
+        updateSlider();
+
     })
 
 
@@ -78,13 +87,11 @@ window.addEventListener('load', function(){
             drawBranch(level+1);
             ctx.restore(); 
 
-            ctx.save();
-            ctx.rotate(-spread);
-            drawBranch(level+1);
-            ctx.restore();
-
             ctx.restore();
         }
+        ctx.beginPath();
+        ctx.arc(0,size,size*0.1,0,Math.PI*2);
+        ctx.fill();  
 
     }
 
@@ -93,6 +100,7 @@ window.addEventListener('load', function(){
         ctx.save();
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = color;
+        ctx.fillStyle = color;
         ctx.translate(canvas.width/2,canvas.height/2);
         for(let i =0; i < sides; i++){
             ctx.rotate((Math.PI *2)/sides);
@@ -100,7 +108,7 @@ window.addEventListener('load', function(){
             }
 
         ctx.restore();
-        randomizeButton.style.backgroundColor = color;
+        // randomizeButton.style.backgroundColor = color;
     }
 
     function updateSlider(){
@@ -112,6 +120,9 @@ window.addEventListener('load', function(){
 
         sliderSides.value = sides; 
         labelSides.innerText = "Sides " + Number(sides.toFixed(1));
+
+        sliderlinewidth.value = lineWidth; 
+        labellinewidth.innerText = "Line Width " + Number(lineWidth.toFixed(1));
 
     }
 
@@ -127,6 +138,9 @@ window.addEventListener('load', function(){
          spread = Math.random() * 2.9 + 0.1;   
         // hsl color declaration 0% is gray scale and 100% is full saturated 
          color = 'hsl('+Math.random() * 360 +', 100%, 50%)';
+        lineWidth = Math.floor(Math.random()* 20 + 10);
+        randomizeButton.style.backgroundColor = color;
+
         //  updateSliders();
         //  drawFractal();
     }
@@ -143,6 +157,7 @@ window.addEventListener('load', function(){
          lineWidth = 15;
         //  updateSliders();
         //  drawFractal();
+        resetButton.style.backgroundColor = color;
     }
 
     resetButton.addEventListener('click', function(){
@@ -155,5 +170,14 @@ window.addEventListener('load', function(){
         randomizeFractal(),
         updateSlider(),
         drawFractal()
+        randomizeButton.style.backgroundColor = color;
     });
+
+    updateSlider(); 
+
+    window.addEventListener('resize', function(){
+        canvas.width = window.innerWidth; 
+        canvas.height = window.innerHeight;
+        drawFractal();
+    })
 });
