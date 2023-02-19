@@ -7,7 +7,7 @@ window.addEventListener('load', function(){
     //canvas settings
     ctx.fillStyle = 'green';
     ctx.strokeStyle = 'gold';
-    ctx.lineWidth = 10;
+   
     ctx.lineCap ='round';
     ctx.shadowColor = 'rgba(0,0,0,0.7)';
     ctx.shadowOffsetX = 10; 
@@ -21,7 +21,7 @@ window.addEventListener('load', function(){
     const branches = 2;
 
     // number of sides to form full circle  
-    let sides = Math.random() * 7 + 2;
+    let sides = Math.floor(Math.random() * 7 + 2);
     //how much smaller the segmets are compared to the previous segment
     let scale = Math.random() * 0.2 + 0.4;
     //angle in radians between parent branches and their segments
@@ -29,12 +29,37 @@ window.addEventListener('load', function(){
     let spread = Math.random() * 2.9 + 0.1;   
     // hsl color declaration 0% is gray scale and 100% is full saturated 
     let color = 'hsl('+Math.random() * 360 +', 100%, 50%)';
+    let lineWidth = Math.floor(Math.random() * 20 +10);
      drawFractal();
 
      
     //controls 
-    const randomizeButton = document.getElementById('randomizeButton')
+    const randomizeButton = document.getElementById('randomizeButton');
+    const resetButton = document.getElementById('resetButton');
+    
+    const sliderSpread = this.document.getElementById('spread');
+    const labelSpread = this.document.querySelector(`[for=spread]`);
+    sliderSpread.addEventListener('change', function(e){
+        console.log(e);
+        spread = e.target.value;
+        drawFractal();
+    })
 
+    const sliderScale = this.document.getElementById('scale');
+    const labelScale = this.document.querySelector(`[for=scale]`);
+    sliderScale.addEventListener('change', function(e){
+        console.log(e);
+        scale = e.target.value;
+        drawFractal();
+    })
+
+    const sliderSides = this.document.getElementById('sides');
+    const labelSides = this.document.querySelector(`[for=sides]`);
+    sliderSides.addEventListener('change', function(e){
+        console.log(e);
+        sides = e.target.value;
+        drawFractal();
+    })
 
 
     function drawBranch(level){
@@ -46,26 +71,27 @@ window.addEventListener('load', function(){
         for(let i =0; i < branches; i++){
             ctx.save();
             ctx.translate(size-(size/branches)*i,0);
-            ctx.rotate(spread);
             ctx.scale(scale,scale); 
+            
+            ctx.save();
+            ctx.rotate(spread);
             drawBranch(level+1);
             ctx.restore(); 
 
             ctx.save();
-            ctx.translate(size -(size/branches)*i,0);
             ctx.rotate(-spread);
-            ctx.scale(scale,scale); 
             drawBranch(level+1);
+            ctx.restore();
+
             ctx.restore();
         }
 
     }
 
-
-
     function drawFractal(){
         ctx.clearRect(0,0,canvas.width, canvas.height);
         ctx.save();
+        ctx.lineWidth = lineWidth;
         ctx.strokeStyle = color;
         ctx.translate(canvas.width/2,canvas.height/2);
         for(let i =0; i < sides; i++){
@@ -74,13 +100,26 @@ window.addEventListener('load', function(){
             }
 
         ctx.restore();
+        randomizeButton.style.backgroundColor = color;
+    }
+
+    function updateSlider(){
+        sliderSpread.value = spread; 
+        labelSpread.innerText = "Spread " + Number(spread.toFixed(1));
+
+        sliderScale.value = scale; 
+        labelScale.innerText = "Scale " + Number(scale.toFixed(1));
+
+        sliderSides.value = sides; 
+        labelSides.innerText = "Sides " + Number(sides.toFixed(1));
+
     }
 
     drawFractal();
     
     function randomizeFractal(){
         // number of sides to form full circle  
-         sides = Math.random() * 7 + 2;
+         sides = Math.floor(Math.random() * 7 + 2);
         //how much smaller the segmets are compared to the previous segment
          scale = Math.random() * 0.2 + 0.4;
         //angle in radians between parent branches and their segments
@@ -88,8 +127,33 @@ window.addEventListener('load', function(){
          spread = Math.random() * 2.9 + 0.1;   
         // hsl color declaration 0% is gray scale and 100% is full saturated 
          color = 'hsl('+Math.random() * 360 +', 100%, 50%)';
-         drawFractal();
+        //  updateSliders();
+        //  drawFractal();
+    }
+    
+    function resetFractal(){
+        sides = 5;
+        //how much smaller the segmets are compared to the previous segment
+         scale = 0.5;
+        //angle in radians between parent branches and their segments
+        //0 is cool 
+         spread = 0.7;  
+        // hsl color declaration 0% is gray scale and 100% is full saturated 
+         color = 'hsl(290, 100%, 50%)';
+         lineWidth = 15;
+        //  updateSliders();
+        //  drawFractal();
     }
 
-    randomizeButton.addEventListener('click', randomizeFractal);
+    resetButton.addEventListener('click', function(){
+        resetFractal(),
+        updateSlider(),
+        drawFractal()
+    }); 
+
+    randomizeButton.addEventListener('click', function(){
+        randomizeFractal(),
+        updateSlider(),
+        drawFractal()
+    });
 });
