@@ -42,14 +42,7 @@ window.addEventListener('load', function(){
     sliderSpread.addEventListener('change', function(e){
         console.log(e);
         spread = e.target.value;
-        drawFractal();
-    })
-
-    const sliderScale = this.document.getElementById('scale');
-    const labelScale = this.document.querySelector(`[for=scale]`);
-    sliderScale.addEventListener('change', function(e){
-        console.log(e);
-        scale = e.target.value;
+        updateSlider();
         drawFractal();
     })
 
@@ -58,9 +51,9 @@ window.addEventListener('load', function(){
     sliderSides.addEventListener('change', function(e){
         console.log(e);
         sides = e.target.value;
+        updateSlider();
         drawFractal();
     })
-
 
     function drawBranch(level){
         if(level > maxLevel) return; 
@@ -102,15 +95,15 @@ window.addEventListener('load', function(){
             }
 
         ctx.restore();
-        randomizeButton.style.backgroundColor = color;
+        // randomizeButton.style.backgroundColor = color;
     }
 
     function updateSlider(){
         sliderSpread.value = spread; 
-        labelSpread.innerText = "Spread " + Number(spread.toFixed(1));
+        labelSpread.innerText = "Spread " + Number(spread).toFixed(1);
 
-        sliderScale.value = scale; 
-        labelScale.innerText = "Scale " + Number(scale.toFixed(1));
+        sliderSides.value = sides; 
+        labelSides.innerText = "Sides " + sides;
     }
 
     drawFractal();
@@ -120,6 +113,7 @@ window.addEventListener('load', function(){
          scale = Math.random() * 0.2 + 0.4;
          spread = Math.random() * 2.9 + 0.1;   
          color = 'hsl('+Math.random() * 360 +', 100%, 50%)';
+         randomizeButton.style.backgroundColor = color;
     }
     
     function resetFractal(){
@@ -140,5 +134,6 @@ window.addEventListener('load', function(){
         randomizeFractal(),
         updateSlider(),
         drawFractal()
+        randomizeButton.style.backgroundColor = color;
     });
 });
