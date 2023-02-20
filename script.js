@@ -17,17 +17,13 @@ window.addEventListener('load', function(){
     //effect settings
     let size = canvas.width <canvas.height ? canvas.width * 0.3 : canvas.height * 0.3;
     //depth of fractal 
-    const maxLevel = 4;
+    const maxLevel = 8;
     const branches = 2;
 
-    // number of sides to form full circle  
-    let sides = Math.floor(Math.random() * 7 + 2);
-    //how much smaller the segmets are compared to the previous segment
-    let scale = Math.random() * 0.2 + 0.4;
-    //angle in radians between parent branches and their segments
-    //0 is cool 
-    let spread = Math.random() * 2.9 + 0.1;   
-    // hsl color declaration 0% is gray scale and 100% is full saturated 
+  
+    let sides = 5
+    let scale = 0.7;
+    let spread = 0.6;   
     let color = 'hsl('+Math.random() * 360 +', 100%, 50%)';
     let lineWidth = Math.floor(Math.random() * 20 +10);
      drawFractal();
@@ -71,27 +67,24 @@ window.addEventListener('load', function(){
             drawBranch(level+1);
             ctx.restore(); 
 
-            ctx.save();
-            ctx.rotate(-spread);
-            drawBranch(level+1);
-            ctx.restore();
-
             ctx.restore();
         }
-
+        ctx.beginPath();
+        ctx.arc(0,size,size *0.1,0,Math.PI * 2);
+        ctx.fill();
     }
 
     function drawFractal(){
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = color;
-
         ctx.clearRect(0,0,canvas.width, canvas.height);
         ctx.save();    
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
         ctx.translate(canvas.width/2,canvas.height/2);
-        ctx.scale(1,1);
         for(let i =0; i < sides; i++){
             ctx.rotate((Math.PI *2)/sides);
             drawBranch(0);
+
             }
 
         ctx.restore();
@@ -110,7 +103,7 @@ window.addEventListener('load', function(){
     
     function randomizeFractal(){
          sides = Math.floor(Math.random() * 7 + 2);
-         scale = Math.random() * 0.2 + 0.4;
+         scale = Math.random() * 0.4 + 0.4;
          spread = Math.random() * 2.9 + 0.1;   
          color = 'hsl('+Math.random() * 360 +', 100%, 50%)';
          randomizeButton.style.backgroundColor = color;
@@ -136,4 +129,16 @@ window.addEventListener('load', function(){
         drawFractal()
         randomizeButton.style.backgroundColor = color;
     });
+
+    window.addEventListener('resize', function(){
+        canvas.width = window.innerWidth; 
+        canvas.height = window.innerHeight; 
+        size = canvas.width <canvas.height ? canvas.width * 0.3 : canvas.height * 0.3;
+        ctx.lineCap ='round';
+        ctx.shadowColor = 'rgba(0,0,0,0.7)';
+        ctx.shadowOffsetX = 10; 
+        ctx.shadowOffsetX = 5;
+        ctx.shadowBlur = 10; 
+        drawFractal(); 
+    })
 });
