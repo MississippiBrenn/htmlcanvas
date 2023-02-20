@@ -89,11 +89,13 @@ window.addEventListener('load', function(){
     }
 
     function drawFractal(){
-        ctx.clearRect(0,0,canvas.width, canvas.height);
-        ctx.save();
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = color;
+
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.save();    
         ctx.translate(canvas.width/2,canvas.height/2);
+        ctx.scale(1,1);
         for(let i =0; i < sides; i++){
             ctx.rotate((Math.PI *2)/sides);
             drawBranch(0);
@@ -109,40 +111,23 @@ window.addEventListener('load', function(){
 
         sliderScale.value = scale; 
         labelScale.innerText = "Scale " + Number(scale.toFixed(1));
-
-        sliderSides.value = sides; 
-        labelSides.innerText = "Sides " + Number(sides.toFixed(1));
-
     }
 
     drawFractal();
     
     function randomizeFractal(){
-        // number of sides to form full circle  
          sides = Math.floor(Math.random() * 7 + 2);
-        //how much smaller the segmets are compared to the previous segment
          scale = Math.random() * 0.2 + 0.4;
-        //angle in radians between parent branches and their segments
-        //0 is cool 
          spread = Math.random() * 2.9 + 0.1;   
-        // hsl color declaration 0% is gray scale and 100% is full saturated 
          color = 'hsl('+Math.random() * 360 +', 100%, 50%)';
-        //  updateSliders();
-        //  drawFractal();
     }
     
     function resetFractal(){
         sides = 5;
-        //how much smaller the segmets are compared to the previous segment
          scale = 0.5;
-        //angle in radians between parent branches and their segments
-        //0 is cool 
          spread = 0.7;  
-        // hsl color declaration 0% is gray scale and 100% is full saturated 
          color = 'hsl(290, 100%, 50%)';
          lineWidth = 15;
-        //  updateSliders();
-        //  drawFractal();
     }
 
     resetButton.addEventListener('click', function(){
